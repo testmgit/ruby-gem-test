@@ -1,5 +1,4 @@
-
-name: Publish RubyGem
+name: Publish Gem
 
 on:
   push:
@@ -17,20 +16,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.1
 
-      - name: Build gem
-        run: gem build ruby-gem-test.gemspec
+      - run: gem build *.gemspec
 
-      - name: Configure credentials
-        run: |
-          mkdir -p ~/.gem
-          echo "---" > ~/.gem/credentials
-          echo ":github: Bearer ${{ secrets.GITHUB_TOKEN }}" >> ~/.gem/credentials
-          chmod 0600 ~/.gem/credentials
-
-      - name: Publish gem
-        run: |
-          gem push ruby-gem-test-1.0.0.gem \
-          --host https://rubygems.pkg.github.com/${{ github.repository_owner }}
+      - run: gem push *.gem \
+             --host https://rubygems.pkg.github.com/${{ github.repository_owner }} \
+             --key ${{ secrets.GITHUB_TOKEN }}
